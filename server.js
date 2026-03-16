@@ -91,6 +91,25 @@ io.on('connection', (socket) => {
         if (roomCode) socket.to(roomCode).emit('game-event', event);
     });
 
+    // ── Amis ──────────────────────────────────────────────────────
+    socket.on('friend-request', ({ to }) => {
+        const from = socket.data.pseudo;
+        const targetId = onlineUsers.get(to);
+        if (targetId) io.to(targetId).emit('friend-request', { from });
+    });
+
+    socket.on('friend-accept', ({ to }) => {
+        const from = socket.data.pseudo;
+        const targetId = onlineUsers.get(to);
+        if (targetId) io.to(targetId).emit('friend-accept', { from });
+    });
+
+    socket.on('friend-decline', ({ to }) => {
+        const from = socket.data.pseudo;
+        const targetId = onlineUsers.get(to);
+        if (targetId) io.to(targetId).emit('friend-decline', { from });
+    });
+
     // ── Déconnexion ───────────────────────────────────────────────
     socket.on('disconnect', () => {
         const { roomCode, pseudo, role } = socket.data ?? {};
