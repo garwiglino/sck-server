@@ -30,6 +30,11 @@ io.on('connection', (socket) => {
         socket.emit('online-users', Array.from(onlineUsers.keys()).filter(p => p !== me));
     });
 
+    socket.on('status-update', ({ status }) => {
+        const pseudo = socket.data.pseudo;
+        if (pseudo) io.emit('status-update', { pseudo, status });
+    });
+
     socket.on('send-dm', ({ to, message }) => {
         const from = socket.data.pseudo;
         const targetId = onlineUsers.get(to);
